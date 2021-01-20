@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "casbin_ruby/version"
+require "casbin/version"
 
 Gem::Specification.new do |s|
   s.name        = "whenever"
-  s.version     = CasbinRuby::VERSION
+  s.version     = Casbin::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Igor Kutyavin"]
   s.email       = ["konayre@evrone.com"]
