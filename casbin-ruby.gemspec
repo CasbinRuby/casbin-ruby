@@ -11,4 +11,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/evrone/casbin-ruby"
   s.licenses    = ["Apache License 2.0"]
   s.description = "An authorization library that supports access control models like ACL, RBAC, ABAC in Ruby"
+  s.summary     = "Casbin in Ruby"
+
+  s.add_development_dependency "rspec", "~> 3.10"
 end
