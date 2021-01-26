@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Casbin
   module Model
     class Model < Casbin::Model::Policy

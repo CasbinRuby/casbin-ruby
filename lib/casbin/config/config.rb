@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # represents an implementation of the ConfigInterface
 module Casbin
   module Config

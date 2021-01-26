@@ -1,0 +1,18 @@
+---
+require:
+  - rubocop-rspec
+
+Style/Documentation:
+  Enabled: false
+
+Naming/PredicateName:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Naming/AccessorMethodName:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
+  Enabled: false

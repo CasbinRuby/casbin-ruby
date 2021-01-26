@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Casbin
   # Enforcer = ManagementEnforcer + RBAC_API + RBAC_WITH_DOMAIN_API
   #

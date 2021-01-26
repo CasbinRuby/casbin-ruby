@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Casbin
   module Model
     class Policy
@@ -18,7 +20,7 @@ module Casbin
       # gets all the authorization rules in the policy.
       def get_policy
         # stub method
-        puts "call get_policy"
+        puts 'call get_policy'
       end
 
       # determines whether a model has the specified policy rule.

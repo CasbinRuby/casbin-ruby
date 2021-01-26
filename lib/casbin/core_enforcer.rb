@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module Casbin
   # CoreEnforcer defines the core functionality of an enforcer.
   class CoreEnforcer
     def initialize(model, adapter, enable_log = false)
       # stub method
-      puts "init CoreEnforcer"
+      puts 'init CoreEnforcer'
     end
 
     # decides whether a "subject" can access a "object" with the operation "action",
