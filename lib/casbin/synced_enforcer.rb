@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Casbin
   # SyncedEnforcer wraps Enforcer and provides synchronized access.
   # It's also a drop-in replacement for Enforcer
@@ -11,13 +13,13 @@ module Casbin
     # stops the thread started by start_auto_load_policy
     def stop_auto_load_policy
       # stub method
-      puts "call stop_auto_load_policy"
+      puts 'call stop_auto_load_policy'
     end
 
     # check if SyncedEnforcer is auto loading policies
     def is_auto_loading_running
       # stub method
-      puts "call is_auto_loading_running"
+      puts 'call is_auto_loading_running'
     end
   end
 end
