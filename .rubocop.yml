@@ -16,3 +16,10 @@ Naming/AccessorMethodName:
 
 Style/OptionalBooleanParameter:
   Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*
+
+RSpec/MultipleExpectations:
+  Enabled: false
