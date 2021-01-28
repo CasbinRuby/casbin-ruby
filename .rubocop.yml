@@ -26,3 +26,9 @@ RSpec/MultipleExpectations:
 
 RSpec/ExampleLength:
   Enabled: false
+
+Metrics/AbcSize:
+  Max: 23
+
+Metrics/CyclomaticComplexity:
+  Max: 8
