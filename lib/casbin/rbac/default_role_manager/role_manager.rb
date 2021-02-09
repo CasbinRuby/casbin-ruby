@@ -11,9 +11,9 @@ module Casbin
       class RoleManager < Casbin::Rbac::RoleManager
         attr_accessor :logger, :all_roles, :max_hierarchy_level, :matching_func
 
-        def initialize(max_hierarchy_level)
+        def initialize(max_hierarchy_level, init_logger = Logger.new($stdout))
           super()
-          @logger = Logger.new($stdout)
+          @logger = init_logger
           @all_roles = {}
           @max_hierarchy_level = max_hierarchy_level
         end
