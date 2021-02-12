@@ -3,16 +3,14 @@
 module Casbin
   module Model
     class FunctionMap
+      alias get_functions fm
+
       def initialize
         @fm = {}
       end
 
       def add_function(name, func)
         fm[name] = func
-      end
-
-      def get_functions
-        fm
       end
 
       def self.load_function_map
@@ -26,7 +24,7 @@ module Casbin
 
       private
 
-      attr_accessor :fm
+      attr_reader :fm
     end
   end
 end
