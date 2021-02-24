@@ -8,7 +8,7 @@ module Casbin
     class FilteredAdapter < Casbin::Persist::Adapter
       # IsFiltered returns true if the loaded policy has been filtered
       # Marks if the loaded policy is filtered or not
-      def is_filtered; end
+      def filtered?; end
 
       # Loads policy rules that match the filter from the storage.
       def load_filtered_policy(_model, _filter); end
