@@ -4,7 +4,7 @@ $LOAD_PATH.push File.expand_path('lib', __dir__)
 require 'casbin/version'
 
 Gem::Specification.new do |s|
-  s.name        = 'whenever'
+  s.name        = 'casbin'
   s.version     = Casbin::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Igor Kutyavin']

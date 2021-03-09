@@ -6,6 +6,7 @@ module Casbin
   module Model
     class Assertion
       attr_accessor :key, :value, :tokens, :policy, :rm
+      attr_reader :logger
 
       def initialize(hash = {})
         @key = hash[:key].to_s

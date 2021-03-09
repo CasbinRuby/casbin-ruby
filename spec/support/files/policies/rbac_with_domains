@@ -1,0 +1,4 @@
+p, diana, domain, data, read
+p, data_admin, other_domain, data, read
+g, alice, data_admin
+g, diana, data_admin

@@ -2,6 +2,9 @@
 require:
   - rubocop-rspec
 
+Layout/EndOfLine:
+  EnforcedStyle: lf
+
 Style/Documentation:
   Enabled: false
 
@@ -25,6 +28,24 @@ RSpec/MultipleExpectations:
   Enabled: false
 
 RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/ExpectInHook:
+  Enabled: false
+
+RSpec/MessageSpies:
+  Enabled: false
+
+Rspec/MultipleMemoizedHelpers:
+  Max: 15
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/NestedGroups:
+  MaxNesting: 7
+
+RSpec/StubbedMock:
   Enabled: false
 
 Metrics/AbcSize:

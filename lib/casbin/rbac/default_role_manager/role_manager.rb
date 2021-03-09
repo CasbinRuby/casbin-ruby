@@ -9,11 +9,12 @@ module Casbin
     module DefaultRoleManager
       # provides a default implementation for the RoleManager interface
       class RoleManager < Casbin::Rbac::RoleManager
-        attr_accessor :logger, :all_roles, :max_hierarchy_level, :matching_func
+        attr_accessor :all_roles, :max_hierarchy_level, :matching_func
+        attr_reader :logger
 
-        def initialize(max_hierarchy_level, init_logger = Logger.new($stdout))
+        def initialize(max_hierarchy_level, logger: Logger.new($stdout))
           super()
-          @logger = init_logger
+          @logger = logger
           @all_roles = {}
           @max_hierarchy_level = max_hierarchy_level
         end

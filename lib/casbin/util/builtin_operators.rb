@@ -82,6 +82,23 @@ module Casbin
         rescue IPAddr::InvalidAddressError
           ip1 == ip2
         end
+
+        # the factory method of the g(_, _) function.
+        def generate_g_function(rm)
+          return ->(*args) { args[0] == args[1] } unless rm
+
+          lambda do |*args|
+            name1 = args[0]
+            name2 = args[1]
+
+            if args.length == 2
+              rm.has_link(name1, name2)
+            else
+              domain = args[2].to_s
+              rm.has_link(name1, name2, domain)
+            end
+          end
+        end
       end
     end
   end

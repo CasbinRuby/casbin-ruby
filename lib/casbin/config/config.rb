@@ -20,7 +20,11 @@ module Casbin
       end
 
       def self.new_config(conf_name)
-        Casbin::Config::Config.new.tap { |config| config.parse(conf_name) }
+        new.tap { |config| config.parse(conf_name) }
+      end
+
+      def self.new_config_from_text(text)
+        new.tap { |config| config.parse_from_io StringIO.new(text) }
       end
 
       def set(key, value)
@@ -57,11 +61,16 @@ module Casbin
       def parse(conf_name)
         return unless File.exist?(conf_name)
 
+        # 'r:UTF-8' required for Windows
+        File.open(conf_name, 'r:UTF-8') { |f| parse_from_io f }
+      end
+
+      def parse_from_io(io)
         line_number = 0
         section = ''
         multi_line = ''
 
-        File.foreach(conf_name) do |raw|
+        io.each_line do |raw|
           line = raw.chomp
           line_number += 1
 

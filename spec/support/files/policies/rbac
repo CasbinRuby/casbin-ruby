@@ -1,0 +1,3 @@
+p, diana, data1, read
+p, data_admin, data2, read
+g, diana, data_admin

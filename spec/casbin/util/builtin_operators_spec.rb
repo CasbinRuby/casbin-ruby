@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'casbin/util/builtin_operators'
+require 'casbin/rbac/default_role_manager/role_manager'
 
 describe Casbin::Util::BuiltinOperators do
   it '.key_match_func' do
@@ -135,5 +136,70 @@ describe Casbin::Util::BuiltinOperators do
     expect(described_class.ip_match_func('192.168.2.123', '192.168.2.123/32')).to be_truthy
     expect(described_class.ip_match_func('10.0.0.11', '10.0.0.0/8')).to be_truthy
     expect(described_class.ip_match_func('11.0.0.123', '10.0.0.0/8')).to be_falsey
+  end
+
+  describe '#generate_g_function' do
+    subject { described_class.generate_g_function(rm).call name1, name2 }
+
+    let(:name1) { 'abc' }
+    let(:name2) { 'cde' }
+
+    context 'without role manager' do
+      let(:rm) { nil }
+
+      context 'when same names' do
+        let(:name2) { 'abc' }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when different names' do
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'with role manager' do
+      let(:rm) { Casbin::Rbac::DefaultRoleManager::RoleManager.new(1) }
+
+      context 'without domain' do
+        before do
+          expect(rm).to(receive(:has_link).with(name1, name2).and_return(has_link))
+        end
+
+        context 'when has link' do
+          let(:has_link) { true }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when has not link' do
+          let(:has_link) { false }
+
+          it { is_expected.to be_falsey }
+        end
+      end
+
+      context 'with domain' do
+        subject { described_class.generate_g_function(rm).call name1, name2, domain }
+
+        let(:domain) { 'domain' }
+
+        before do
+          expect(rm).to(receive(:has_link).with(name1, name2, domain).and_return(has_link))
+        end
+
+        context 'when has link' do
+          let(:has_link) { true }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when has not link' do
+          let(:has_link) { false }
+
+          it { is_expected.to be_falsey }
+        end
+      end
+    end
   end
 end

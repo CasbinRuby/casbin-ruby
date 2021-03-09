@@ -34,21 +34,17 @@ module Casbin
         end
 
         def save_policy_file(model)
-          File.open(file_path, 'w') do |file|
-            lines = []
-            %w[p g].each { |root_key| lines = read_pvals(lines, model, root_key) }
-            lines.each_index { |index| lines[index] += "\n" if i != lines.count - 1 }
-            file.write(lines.join(''))
+          # 'w:UTF-8' required for Windows
+          File.open(file_path, 'w:UTF-8') do |file|
+            file.write %w[p g].map { |root_key| policy_lines(model, root_key) }.flatten.join "\n"
           end
         end
 
-        def read_pvals(lines, model, root_key)
-          return lines unless model.model.key?(root_key)
+        def policy_lines(model, root_key)
+          return [] unless model.model.key?(root_key)
 
-          lines.tap do
-            model.model[root_key].each do |key, ast|
-              ast.policy.each { |pvals| lines << pvals.join("#{key}, ,") }
-            end
+          model.model[root_key].map do |key, ast|
+            ast.policy.map { |policy_values| "#{key}, #{policy_values.join ', '}" }
           end
         end
       end
