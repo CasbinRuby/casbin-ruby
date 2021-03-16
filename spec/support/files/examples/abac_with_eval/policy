@@ -1,0 +1,3 @@
+p, r.sub.Age > 18, /data1, read
+p, r.sub.Age < 60, /data2, write
+p, r.sub.Position.Rank > 1, /special_data, read

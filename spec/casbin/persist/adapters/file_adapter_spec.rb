@@ -4,13 +4,9 @@ require 'tempfile'
 
 require 'casbin/model/model'
 require 'casbin/persist/adapters/file_adapter'
-require 'support/model_configs_context'
-require 'support/policy_files_context'
+require 'support/model_helper'
 
 describe Casbin::Persist::Adapters::FileAdapter do
-  include_context 'with model configs'
-  include_context 'with policy files'
-
   let(:adapter) { described_class.new path }
   let(:model) { Casbin::Model::Model.new }
 
@@ -20,8 +16,8 @@ describe Casbin::Persist::Adapters::FileAdapter do
     before { model.load_model model_path }
 
     context 'with basic' do
-      let(:model_path) { basic_config }
-      let(:path) { basic_policy_file }
+      let(:model_path) { model_config 'basic' }
+      let(:path) { policy_file 'basic' }
 
       let(:rule1) { %w[admin data1 read] }
       let(:rule2) { %w[admin data2 write] }
@@ -36,8 +32,8 @@ describe Casbin::Persist::Adapters::FileAdapter do
     end
 
     context 'with rbac' do
-      let(:model_path) { rbac_config }
-      let(:path) { rbac_policy_file }
+      let(:model_path) { model_config 'rbac' }
+      let(:path) { policy_file 'rbac' }
 
       let(:p_rule1) { %w[diana data1 read] }
       let(:p_rule2) { %w[data_admin data2 read] }
@@ -54,21 +50,31 @@ describe Casbin::Persist::Adapters::FileAdapter do
     end
 
     context 'with rbac_with_domains' do
-      let(:model_path) { rbac_with_domains_config }
-      let(:path) { rbac_with_domains_policy_file }
+      let(:model_path) { model_config 'rbac_with_domains' }
+      let(:path) { policy_file 'rbac_with_domains' }
 
-      let(:p_rule1) { %w[diana domain data read] }
-      let(:p_rule2) { %w[data_admin other_domain data read] }
-      let(:g_rule1) {  %w[alice data_admin] }
-      let(:g_rule2) {  %w[diana data_admin] }
+      let(:p_rules) do
+        [
+          %w[diana domain data1 read],
+          %w[data_admin domain data2 read],
+          %w[data_admin other_domain data1 read]
+        ]
+      end
+
+      let(:g_rules) do
+        [
+          %w[alice data_admin domain],
+          %w[diana data_admin other_domain]
+        ]
+      end
 
       it 'loads correct policies' do
         subject
 
-        [p_rule1, p_rule2].each do |rule|
+        p_rules.each do |rule|
           expect(model.has_policy('p', 'p', rule)).to be_truthy
         end
-        [g_rule1, g_rule2].each do |rule|
+        g_rules.each do |rule|
           expect(model.has_policy('g', 'g', rule)).to be_truthy
         end
       end
@@ -96,8 +102,8 @@ describe Casbin::Persist::Adapters::FileAdapter do
     end
 
     context 'with basic' do
-      let(:model_path) { basic_config }
-      let(:expected_file) { basic_policy_file }
+      let(:model_path) { model_config 'basic' }
+      let(:expected_file) { policy_file 'basic' }
 
       let(:rule1) { %w[admin data1 read] }
       let(:rule2) { %w[admin data2 write] }
@@ -108,8 +114,8 @@ describe Casbin::Persist::Adapters::FileAdapter do
     end
 
     context 'with rbac' do
-      let(:model_path) { rbac_config }
-      let(:expected_file) { rbac_policy_file }
+      let(:model_path) { model_config 'rbac' }
+      let(:expected_file) { policy_file 'rbac' }
 
       let(:p_rule1) { %w[diana data1 read] }
       let(:p_rule2) { %w[data_admin data2 read] }
@@ -124,17 +130,27 @@ describe Casbin::Persist::Adapters::FileAdapter do
     end
 
     context 'with rbac_with_domains' do
-      let(:model_path) { rbac_with_domains_config }
-      let(:expected_file) { rbac_with_domains_policy_file }
+      let(:model_path) { model_config 'rbac_with_domains' }
+      let(:expected_file) { policy_file 'rbac_with_domains' }
 
-      let(:p_rule1) { %w[diana domain data read] }
-      let(:p_rule2) { %w[data_admin other_domain data read] }
-      let(:g_rule1) {  %w[alice data_admin] }
-      let(:g_rule2) {  %w[diana data_admin] }
+      let(:p_rules) do
+        [
+          %w[diana domain data1 read],
+          %w[data_admin domain data2 read],
+          %w[data_admin other_domain data1 read]
+        ]
+      end
+
+      let(:g_rules) do
+        [
+          %w[alice data_admin domain],
+          %w[diana data_admin other_domain]
+        ]
+      end
 
       before do
-        model.add_policies 'p', 'p', [p_rule1, p_rule2]
-        model.add_policies 'g', 'g', [g_rule1, g_rule2]
+        model.add_policies 'p', 'p', p_rules
+        model.add_policies 'g', 'g', g_rules
       end
 
       it_behaves_like 'saves correct file'

@@ -15,6 +15,8 @@ Gem::Specification.new do |s|
   s.summary     = 'Casbin in Ruby'
   s.required_ruby_version = '>= 2.5.0'
 
+  s.add_dependency 'keisan', '~> 0.8.0'
+
   s.add_development_dependency 'rspec', '~> 3.10'
   s.add_development_dependency 'rubocop', '>= 1.8'
   s.add_development_dependency 'rubocop-rspec'

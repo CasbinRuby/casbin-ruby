@@ -1,0 +1,2 @@
+p, book_admin, data1, GET
+g, /book/:id, book_admin

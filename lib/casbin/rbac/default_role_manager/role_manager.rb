@@ -46,7 +46,7 @@ module Casbin
         end
 
         def add_link(name1, name2, *domain)
-          names = names_by_domain!(name1, name2, *domain)
+          names = names_by_domain(name1, name2, *domain)
 
           role1 = create_role(names[0])
           role2 = create_role(names[1])
@@ -54,7 +54,7 @@ module Casbin
         end
 
         def delete_link(name1, name2, *domain)
-          names = names_by_domain!(name1, name2, *domain)
+          names = names_by_domain(name1, name2, *domain)
 
           raise 'error: name1 or name2 does not exist' if !has_role(names[0]) || !has_role(names[1])
 
@@ -64,18 +64,28 @@ module Casbin
         end
 
         def has_link(name1, name2, *domain)
-          names = names_by_domain!(name1, name2, *domain)
+          names = names_by_domain(name1, name2, *domain)
 
           return true if names[0] == names[1]
+
           return false if !has_role(names[0]) || !has_role(names[1])
 
-          all_roles[names[0]].has_role(names[1], max_hierarchy_level)
+          if matching_func.nil?
+            role1 = create_role names[0]
+            role1.has_role names[1], max_hierarchy_level
+          else
+            all_roles.each do |key, role|
+              return true if matching_func.call(names[0], key) && role.has_role(names[1], max_hierarchy_level)
+            end
+
+            false
+          end
         end
 
         # gets the roles that a subject inherits.
         # domain is a prefix to the roles.
         def get_roles(name, *domain)
-          name = name_by_domain!(name, *domain)
+          name = name_by_domain(name, *domain)
           return [] unless has_role(name)
 
           roles = create_role(name).get_roles
@@ -89,7 +99,7 @@ module Casbin
         # gets the users that inherits a subject.
         # domain is an unreferenced parameter here, may be used in other implementations.
         def get_users(name, *domain)
-          name = name_by_domain!(name, *domain)
+          name = name_by_domain(name, *domain)
           return [] unless has_role(name)
 
           all_roles.map do |_key, role|
@@ -110,7 +120,7 @@ module Casbin
 
         private
 
-        def names_by_domain!(name1, name2, *domain)
+        def names_by_domain(name1, name2, *domain)
           raise 'error: domain should be 1 parameter' if domain.size > 1
 
           if domain.size.zero?
@@ -120,7 +130,7 @@ module Casbin
           end
         end
 
-        def name_by_domain!(name, *domain)
+        def name_by_domain(name, *domain)
           raise 'error: domain should be 1 parameter' if domain.size > 1
 
           domain.size == 1 ? "#{domain[0]}::#{name}" : name

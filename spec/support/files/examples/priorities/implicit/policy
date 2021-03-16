@@ -1,0 +1,4 @@
+p, admin, data1, read, allow
+p, admin, data1, read, deny
+p, admin, data2, read, deny
+p, admin, data2, read, allow

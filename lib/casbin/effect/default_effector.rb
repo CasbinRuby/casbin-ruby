@@ -9,28 +9,27 @@ module Casbin
       # merges all matching results collected by the enforcer into a single decision.
       def merge_effects(expr, effects, _results)
         effects = Array(effects)
-        result = false
 
         case expr
         when 'some(where (p_eft == allow))'
-          result = true if effects.include?(ALLOW)
+          effects.include? ALLOW
         when '!some(where (p_eft == deny))'
-          result = true
-          result = false if effects.include?(DENY)
+          !effects.include? DENY
         when 'some(where (p_eft == allow)) && !some(where (p_eft == deny))'
-          result = false if effects.include?(DENY)
-          result = true if effects.include?(ALLOW)
+          !effects.include?(DENY) && effects.include?(ALLOW)
         when 'priority(p_eft) || deny'
+          result = false
           effects.each do |eft|
-            next unless eft != INDETERMINATE
+            next if eft == INDETERMINATE
 
             result = eft == ALLOW
+            break
           end
+
+          result
         else
           raise 'unsupported effect'
         end
-
-        result
       end
     end
   end

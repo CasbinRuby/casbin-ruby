@@ -2,15 +2,16 @@
 
 require 'casbin/model/model'
 require 'casbin/rbac/default_role_manager/role_manager'
-require 'support/model_configs_context'
+require 'support/model_helper'
 
 describe Casbin::Model::Model do
-  include_context 'with model configs'
-
   let(:model) { described_class.new }
 
   let(:rule1) { %w[admin data1 read] }
   let(:rule2) { %w[admin data2 write] }
+
+  let(:basic_config) { model_config 'basic' }
+  let(:rbac_config) { model_config 'rbac' }
 
   describe '#load_model_from_text' do
     let(:text) do
@@ -326,7 +327,7 @@ describe Casbin::Model::Model do
   it '#remove_filtered_policy' do
     domain_rule = %w[admin domain1 data1 read]
 
-    model.load_model(rbac_with_domains_config)
+    model.load_model(model_config 'rbac_with_domains')
     model.add_policy('p', 'p', domain_rule)
 
     res = model.remove_filtered_policy('p', 'p', 1, 'domain1', 'data1')

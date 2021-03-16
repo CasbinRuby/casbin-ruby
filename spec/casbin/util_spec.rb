@@ -11,9 +11,40 @@ describe Casbin::Util do
     expect(described_class.remove_comments('r.act == p.act')).to eq 'r.act == p.act'
   end
 
-  it '.escape_assertion' do
-    expect(described_class.escape_assertion('m = r.sub == p.sub && r.obj == p.obj && r.act == p.act'))
-      .to eq 'm = r_sub == p_sub && r_obj == p_obj && r_act == p_act'
+  describe '#escape_assertion' do
+    subject { described_class.escape_assertion(value) }
+
+    context 'without attributes' do
+      let(:value) { 'm = r.sub == p.sub && r.obj == p.obj && r.act == p.act' }
+
+      it { is_expected.to eq 'm = r_sub == p_sub && r_obj == p_obj && r_act == p_act' }
+    end
+
+    context 'with attributes' do
+      context 'with latin identifier' do
+        let(:value) { 'm = r.sub.Chief == r.obj.Owner' }
+
+        it { is_expected.to eq "m = r_sub['Chief'] == r_obj['Owner']" }
+      end
+
+      context 'with underscore' do
+        let(:value) { 'm = r.sub == r.obj._Owner' }
+
+        it { is_expected.to eq "m = r_sub == r_obj['_Owner']" }
+      end
+
+      context 'with unicode identifier' do
+        let(:value) { 'm = r.sub == r.obj.Идентификатор1' }
+
+        it { is_expected.to eq "m = r_sub == r_obj['Идентификатор1']" }
+      end
+
+      context 'with nested identifiers' do
+        let(:value) { 'm = r.sub == r.obj.Owner.Position' }
+
+        it { is_expected.to eq "m = r_sub == r_obj['Owner']['Position']" }
+      end
+    end
   end
 
   it '.array_remove_duplicates' do
@@ -39,9 +70,22 @@ describe Casbin::Util do
     expect(described_class.has_eval('eval(a) && eval(b) && a && b && c')).to be_truthy
   end
 
-  it '.replace_eval' do
-    expect(described_class.replace_eval('eval(a) && eval(b) && c', %w[a b])).to eq '(a) && (b) && c'
-    expect(described_class.replace_eval('a && eval(b) && eval(c)', %w[b c])).to eq 'a && (b) && (c)'
+  describe '#replace_eval' do
+    subject { described_class.replace_eval(expr, rules) }
+
+    context 'with eval in the beginning' do
+      let(:expr) { 'eval(a) && eval(b) && c' }
+      let(:rules) { { 'a' => '1 + 1', 'b' => 'a + 1' } }
+
+      it { is_expected.to eq '(1 + 1) && (a + 1) && c' }
+    end
+
+    context 'with eval in the end' do
+      let(:expr) { 'a && eval(b) && eval(c)' }
+      let(:rules) { { 'b' => '1', 'c' => '(a + 1) + c' } }
+
+      it { is_expected.to eq 'a && (1) && ((a + 1) + c)' }
+    end
   end
 
   it '.get_eval_value' do
