@@ -169,7 +169,6 @@ if enforcer.enforce(sub, obj, act)
   # do something
 else
   # deny the request, show an error
-  # do something
 end
 ```
 
