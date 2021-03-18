@@ -130,7 +130,7 @@ What Casbin does NOT do:
 ## Installation
 
 ```
-pip install casbin
+gem install casbin
 ```
 
 ## Documentation
@@ -166,10 +166,10 @@ act = 'read'  # the operation that the user performs on the resource.
 
 if enforcer.enforce(sub, obj, act)
   # permit alice to read data1
-  pass
+  # do something
 else
   # deny the request, show an error
-  pass
+  # do something
 end
 ```
 
@@ -226,11 +226,11 @@ Priority | [priority_model.conf](https://github.com/casbin/casbin/blob/master/ex
 
 ## Middlewares
 
-Authz middlewares for web frameworks: https://casbin.org/docs/en/middlewares
+In process
 
 ## Adopters
 
-https://casbin.org/docs/en/adopters
+In process
 
 ## Contributors
 
