@@ -124,6 +124,20 @@ module Casbin
         state[:res]
       end
 
+      # gets all values for a field for all rules in a policy, duplicated values are removed.
+      def get_values_for_field_in_policy(sec, ptype, field_index)
+        values = []
+        return values unless model.keys.include?(sec)
+        return values unless model[sec].include?(ptype)
+
+        model[sec][ptype].policy.each do |rule|
+          value = rule[field_index]
+          values << value if values.include?(value)
+        end
+
+        values
+      end
+
       private
 
       def filtered_rule(state, rule, field_values, field_index)
