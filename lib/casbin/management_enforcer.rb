@@ -4,7 +4,7 @@ require 'casbin/internal_enforcer'
 
 module Casbin
   # ManagementEnforcer = InternalEnforcer + Management API.
-  class ManagementEnforcer < Casbin::InternalEnforcer
+  class ManagementEnforcer < InternalEnforcer
     alias parent_add_policy add_policy
     alias parent_add_policies add_policies
     alias parent_update_policy update_policy

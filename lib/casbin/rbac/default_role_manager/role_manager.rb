@@ -8,8 +8,8 @@ module Casbin
   module Rbac
     module DefaultRoleManager
       # provides a default implementation for the RoleManager interface
-      class RoleManager < Casbin::Rbac::RoleManager
-        attr_accessor :all_roles, :max_hierarchy_level, :matching_func
+      class RoleManager < Rbac::RoleManager
+        attr_accessor :all_roles, :max_hierarchy_level, :matching_func, :has_domain_pattern, :domain_matching_func
         attr_reader :logger
 
         def initialize(max_hierarchy_level, logger: Logger.new($stdout))
@@ -21,6 +21,11 @@ module Casbin
 
         def add_matching_func(fn)
           @matching_func = fn
+        end
+
+        def add_domain_matching_func(fn)
+          self.has_domain_pattern = true
+          self.domain_matching_func = fn
         end
 
         def has_role(name)

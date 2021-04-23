@@ -7,7 +7,7 @@ module Casbin
     module Adapters
       # the file adapter for Casbin.
       # It can load policy from file or save policy to file.
-      class FileAdapter < Casbin::Persist::Adapter
+      class FileAdapter < Persist::Adapter
         def initialize(file_path)
           super()
           @file_path = file_path

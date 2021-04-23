@@ -8,8 +8,11 @@ module Casbin
       INDETERMINATE = 1
       DENY = 2
 
-      # merges all matching results collected by the enforcer into a single decision.
-      def merge_effects(expr, effects, results); end
+      # returns a intermediate effect based on the matched effects of the enforcer
+      def intermediate_effect(_effects); end
+
+      # returns the final effect based on the matched effects of the enforcer
+      def final_effect(_effects); end
     end
   end
 end

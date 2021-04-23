@@ -5,7 +5,7 @@ require 'casbin/persist/adapter'
 module Casbin
   module Persist
     # FilteredAdapter is the interface for Casbin adapters supporting filtered policies.
-    class FilteredAdapter < Casbin::Persist::Adapter
+    class FilteredAdapter < Persist::Adapter
       # IsFiltered returns true if the loaded policy has been filtered
       # Marks if the loaded policy is filtered or not
       def filtered?; end

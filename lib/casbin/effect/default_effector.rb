@@ -1,35 +1,36 @@
 # frozen_string_literal: true
 
 require 'casbin/effect/effector'
+require 'casbin/effect/allow_override_effector'
+require 'casbin/effect/deny_override_effector'
+require 'casbin/effect/allow_and_deny_effector'
+require 'casbin/effect/priority_effector'
 
 module Casbin
   module Effect
     # default effector for Casbin.
-    class DefaultEffector < Casbin::Effect::Effector
-      # merges all matching results collected by the enforcer into a single decision.
-      def merge_effects(expr, effects, _results)
-        effects = Array(effects)
-
+    class DefaultEffector < Effect::Effector
+      # creates an effector based on the current policy effect expression
+      def self.get_effector(expr)
         case expr
         when 'some(where (p_eft == allow))'
-          effects.include? ALLOW
+          Effect::AllowOverrideEffector.new
         when '!some(where (p_eft == deny))'
-          !effects.include? DENY
+          Effect::DenyOverrideEffector.new
         when 'some(where (p_eft == allow)) && !some(where (p_eft == deny))'
-          !effects.include?(DENY) && effects.include?(ALLOW)
+          Effect::AllowAndDenyEffector.new
         when 'priority(p_eft) || deny'
-          result = false
-          effects.each do |eft|
-            next if eft == INDETERMINATE
-
-            result = eft == ALLOW
-            break
-          end
-
-          result
+          Effect::PriorityEffector.new
         else
           raise 'unsupported effect'
         end
+      end
+
+      def self.effect_to_bool(effect)
+        return true if effect == ALLOW
+        return false if effect == DENY
+
+        raise "effect can't be converted to boolean"
       end
     end
   end

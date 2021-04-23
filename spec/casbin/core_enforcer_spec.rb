@@ -38,6 +38,8 @@ describe Casbin::CoreEnforcer do
       end
 
       context 'when adapter is a special object' do
+        let(:model) { model_config 'basic' }
+
         it_behaves_like 'creates new enforcer'
       end
     end
@@ -61,10 +63,10 @@ describe Casbin::CoreEnforcer do
       let(:adapter) { policy_file 'basic' }
 
       requests = {
-        %w[admin data1 read] => true,
-        %w[admin data2 write] => true,
-        %w[admin data1 write] => false,
-        %w[admin data2 read] => false,
+        %w[alice data1 read] => true,
+        %w[bob data2 write] => true,
+        %w[alice data1 write] => false,
+        %w[bob data2 read] => false,
 
         %w[admin2 data1 read] => false
       }
@@ -77,10 +79,10 @@ describe Casbin::CoreEnforcer do
       let(:adapter) { policy_file 'basic' }
 
       requests = {
-        %w[admin data1 read] => true,
-        %w[admin data2 write] => true,
-        %w[admin data1 write] => false,
-        %w[admin data2 read] => false,
+        %w[alice data1 read] => true,
+        %w[bob data2 write] => true,
+        %w[alice data1 write] => false,
+        %w[bob data2 read] => false,
 
         %w[admin2 data1 read] => false,
 
@@ -130,14 +132,14 @@ describe Casbin::CoreEnforcer do
       let(:adapter) { policy_file 'rbac' }
 
       requests = {
-        %w[diana data1 read] => true,
-        %w[diana data1 write] => false,
-        %w[diana data2 read] => true,
+        %w[alice data1 read] => true,
+        %w[alice data1 write] => false,
+        %w[alice data2 read] => true,
 
-        %w[alice data1 read] => false,
+        %w[bob data1 read] => false,
 
-        %w[data_admin data2 read] => true,
-        %w[data_admin data1 read] => false
+        %w[data2_admin data2 read] => true,
+        %w[data2_admin data1 read] => false
       }
 
       it_behaves_like 'correctly enforces rules', requests
@@ -148,22 +150,20 @@ describe Casbin::CoreEnforcer do
       let(:adapter) { policy_file 'rbac_with_domains' }
 
       requests = {
-        %w[diana domain data1 read] => true,
-        %w[diana third_domain data read] => false,
-        %w[diana domain data2 read] => false,
-        %w[diana domain data1 delete] => false,
-        %w[diana other_domain data1 read] => true,
-        %w[diana other_domain data1 write] => false,
+        %w[alice domain1 data1 read] => true,
+        %w[alice domain2 data1 read] => false,
+        %w[alice domain1 data2 read] => false,
+        %w[alice domain1 data1 delete] => false,
 
-        %w[alice domain data1 read] => false,
-        %w[alice domain data2 read] => true,
-        %w[alice domain data2 write] => false,
-        %w[alice other_domain data1 read] => false,
-        %w[alice other_domain data1 write] => false,
+        %w[bob domain1 data1 read] => false,
+        %w[bob domain2 data2 read] => true,
+        %w[bob domain1 data1 write] => false,
+        %w[bob domain2 data2 write] => true,
 
-        %w[data_admin domain data1 read] => false,
-        %w[data_admin other_domain data1 read] => true,
-        %w[data_admin other_domain data1 write] => false
+        %w[admin domain1 data1 read] => true,
+        %w[admin domain2 data2 read] => true,
+        %w[admin domain1 data1 write] => true,
+        %w[admin domain2 data2 write] => true
       }
 
       it_behaves_like 'correctly enforces rules', requests
@@ -206,14 +206,14 @@ describe Casbin::CoreEnforcer do
       let(:adapter) { policy_file 'rbac_with_pattern' }
 
       requests = {
-        %w[/book/abc data1 GET] => true,
-        %w[/book/1 data1 GET] => true,
-        %w[/book/1 data1 POST] => false,
-        %w[/other/1 data1 GET] => false
+        %w[alice /book/1 GET] => true,
+        %w[alice /book/1 POST] => false,
+        %w[alice /other/1 GET] => false
       }
 
       before do
-        enforcer.role_manager.add_matching_func ->(key1, key2) { Casbin::Util::BuiltinOperators.key_match2 key1, key2 }
+        enforcer.add_named_matching_func('g2',
+                                         ->(key1, key2) { Casbin::Util::BuiltinOperators.key_match2 key1, key2 })
       end
 
       it_behaves_like 'correctly enforces rules', requests
@@ -237,7 +237,7 @@ describe Casbin::CoreEnforcer do
       }
 
       before do
-        matching_func = ->(key1, key2) { Casbin::Util::BuiltinOperators.key_match2 key1, key2 }
+        matching_func = ->(key1, key2) { Util::BuiltinOperators.key_match2 key1, key2 }
         enforcer.role_manager.add_matching_func matching_func
         # enforcer.role_manager.add_domain_matching_func matching_func
       end

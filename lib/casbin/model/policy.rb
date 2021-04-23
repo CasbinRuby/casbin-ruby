@@ -13,10 +13,11 @@ module Casbin
       end
 
       # initializes the roles in RBAC.
-      def build_role_links(rm)
+      def build_role_links(rm_map)
         return unless model.key? 'g'
 
-        model['g'].each_value do |ast|
+        model['g'].each do |ptype, ast|
+          rm = rm_map[ptype]
           ast.build_role_links(rm)
         end
       end

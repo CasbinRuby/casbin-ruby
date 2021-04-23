@@ -7,7 +7,7 @@ require 'casbin/util'
 
 module Casbin
   module Model
-    class Model < Casbin::Model::Policy
+    class Model < Model::Policy
       SECTION_NAME_MAP = {
         r: 'request_definition',
         p: 'policy_definition',
@@ -17,12 +17,12 @@ module Casbin
       }.freeze
 
       def load_model(path)
-        cfg = Casbin::Config::Config.new_config(path)
+        cfg = Config::Config.new_config(path)
         load_sections(cfg)
       end
 
       def load_model_from_text(text)
-        cfg = Casbin::Config::Config.new_config_from_text(text)
+        cfg = Config::Config.new_config_from_text(text)
         load_sections(cfg)
       end
 
@@ -54,7 +54,7 @@ module Casbin
       end
 
       def model_sec_set(ast)
-        ast.value = Casbin::Util.remove_comments(Casbin::Util.escape_assertion(ast.value))
+        ast.value = Util.remove_comments(Util.escape_assertion(ast.value))
       end
 
       def load_section(cfg, sec)

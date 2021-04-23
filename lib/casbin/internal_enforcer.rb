@@ -4,7 +4,7 @@ require 'casbin/core_enforcer'
 
 module Casbin
   # InternalEnforcer = CoreEnforcer + Internal API.
-  class InternalEnforcer < Casbin::CoreEnforcer
+  class InternalEnforcer < CoreEnforcer
     protected
 
     # adds a rule to the current policy.

@@ -21,7 +21,7 @@ module Casbin
       def escape_assertion(string)
         string.gsub /\br\.(\w+)((?:\.[[:alpha:]_][[:alnum:]_]*)+)/ do |_|
           param = Regexp.last_match(1)
-          attrs = Regexp.last_match(2)[1..-1].split('.').map do |attr|
+          attrs = Regexp.last_match(2)[1..].split('.').map do |attr|
             "['#{attr}']"
           end.join
           "r_#{param}#{attrs}"
@@ -50,8 +50,14 @@ module Casbin
 
       # replace all occurrences of function eval with rules
       def replace_eval(expr, rules)
+        i = -1
         expr.gsub EVAL_REG do |_|
-          "(#{escape_assertion rules[Regexp.last_match 1]})"
+          i += 1
+          if rules.is_a? Hash
+            "(#{escape_assertion rules[Regexp.last_match 1]})"
+          else
+            "(#{escape_assertion rules[i]})"
+          end
         end
       end
 
@@ -59,6 +65,16 @@ module Casbin
       # Returns the parameters of function eval.
       def get_eval_value(string)
         string.scan(EVAL_REG).flatten
+      end
+
+      # joins a string and a slice into a new slice.
+      def join_slice(a, *b)
+        Array.new(a).concat b
+      end
+
+      # returns the elements in `a` that aren't in `b`.
+      def set_subtract(a, b)
+        a - b
       end
     end
   end

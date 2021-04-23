@@ -30,7 +30,7 @@ module Casbin
       end
     end
 
-    attr_accessor :adapter, :auto_build_role_links, :auto_save, :effector, :enabled, :role_manager, :watcher
+    attr_accessor :adapter, :auto_build_role_links, :auto_save, :effector, :enabled, :watcher, :rm_map, :effector
     attr_reader :model
 
     # initializes an enforcer with a model file and a policy file.
@@ -49,10 +49,15 @@ module Casbin
 
     # initializes an enforcer with a model and a database adapter.
     def init_with_model_and_adapter(m, adapter = nil, logger: Logger.new($stdout))
+      if !m.is_a?(Model::Model) || (!adapter.nil? && !adapter.is_a?(Persist::Adapter))
+        raise RuntimeError('Invalid parameters for enforcer.')
+      end
+
       self.adapter = adapter
 
       self.model = m
       model.print_model
+      self.fm = Model::FunctionMap.load_function_map
 
       init(logger: logger)
 
@@ -83,12 +88,23 @@ module Casbin
       self.model = new_model
       model.load_model model_path
       model.print_model
+      self.fm = Model::FunctionMap.load_function_map
     end
 
     # sets the current model.
     def model=(m)
       @model = m
       self.fm = Model::FunctionMap.load_function_map
+    end
+
+    # gets the current role manager.
+    def role_manager
+      rm_map['g']
+    end
+
+    # sets the current role manager.
+    def role_manager=(rm)
+      rm_map['g'] = rm
     end
 
     # clears all policy.
@@ -101,6 +117,7 @@ module Casbin
       model.clear_policy
       adapter.load_policy model
 
+      init_rm_map
       model.print_policy
       build_role_links if auto_build_role_links
     end
@@ -112,6 +129,7 @@ module Casbin
       raise ArgumentError, 'filtered policies are not supported by this adapter' unless adapter.respond_to?(:filtered?)
 
       adapter.load_filtered_policy(model, filter)
+      init_rm_map
       model.print_policy
       build_role_links if auto_build_role_links
     end
@@ -140,46 +158,78 @@ module Casbin
 
     alias enabled? enabled
 
+    # changes the enforcing state of Casbin,
+    # when Casbin is disabled, all access will be allowed by the Enforce() function.
+    def enable_enforce(enabled = true)
+      self.enabled = enabled
+    end
+
+    # controls whether to save a policy rule automatically to the adapter when it is added or removed.
+    def enable_auto_save(auto_save)
+      self.auto_save = auto_save
+    end
+
+    # controls whether to rebuild the role inheritance relations when a role is added or deleted.
+    def enable_auto_build_role_links(auto_build_role_links)
+      self.auto_build_role_links = auto_build_role_links
+    end
+
     # manually rebuild the role inheritance relations.
     def build_role_links
-      role_manager.clear
-      model.build_role_links(role_manager)
+      rm_map.each_value(&:clear)
+      model.build_role_links(rm_map)
+    end
+
+    # add_named_matching_func add MatchingFunc by ptype RoleManager
+    def add_named_matching_func(ptype, fn)
+      rm_map[ptype]&.add_matching_func(fn)
+    end
+
+    # add_named_domain_matching_func add MatchingFunc by ptype to RoleManager
+    def add_named_domain_matching_func(ptype, fn)
+      rm_map[ptype]&.add_domain_matching_func(fn)
     end
 
     # decides whether a "subject" can access a "object" with the operation "action",
     # input parameters are usually: (sub, obj, act).
     def enforce(*rvals)
-      return false unless enabled?
+      enforce_ex(*rvals)[0]
+    end
 
+    # decides whether a "subject" can access a "object" with the operation "action",
+    # input parameters are usually: (sub, obj, act).
+    # return judge result with reason
+    def enforce_ex(*rvals)
+      return [false, []] unless enabled?
+
+      raise 'model is undefined' unless model.model&.key?('m')
       raise 'model is undefined' unless model.model['m']&.key?('m')
 
       r_tokens = model.model['r']['r'].tokens
-      raise 'invalid request size' if r_tokens.length != rvals.length
-
       p_tokens = model.model['p']['p'].tokens
-      effector_model = model.model['e']['e'].value
-      exp_string = model.model['m']['m'].value
+      raise RuntimeError('invalid request size') unless r_tokens.size == rvals.size
 
+      exp_string = model.model['m']['m'].value
       has_eval = Util.has_eval(exp_string)
       expression = exp_string
-
       policy_effects = Set.new
-      matcher_results = Set.new
-
       r_parameters = load_params(r_tokens, rvals)
-
-      policy_rules = model.get_policy('p', 'p')
-
-      if policy_rules.any?
-        policy_rules.each do |pvals|
-          raise 'invalid policy size' if p_tokens.length != pvals.length
+      policy_len = model.model['p']['p'].policy.size
+      explain_index = -1
+      if policy_len.positive?
+        model.model['p']['p'].policy.each_with_index do |pvals, i|
+          raise RuntimeError('invalid policy size') unless p_tokens.size == pvals.size
 
           p_parameters = load_params(p_tokens, pvals)
-          parameters = r_parameters.merge p_parameters
-          expression = Util.replace_eval(exp_string, p_parameters) if has_eval
+          parameters = r_parameters.merge(p_parameters)
 
-          result = evaluate expression, functions, parameters
+          if has_eval
+            rule_names = Util.get_eval_value(exp_string)
+            rules = rule_names.map { |rule_name| Util.escape_assertion(p_parameters[rule_name]) }
+            expression = Util.replace_eval(exp_string, rules)
+          end
 
+          result = evaluate(expression, functions, parameters)
           case result
           when TrueClass, FalseClass
             unless result
@@ -190,33 +240,52 @@ module Casbin
             if result.zero?
               policy_effects.add(Effect::Effector::INDETERMINATE)
               next
-            else
-              matcher_results.add(result)
             end
           else
             raise 'matcher result should be true, false or a number'
           end
 
-          policy_effects.add policy_effect(parameters)
+          if parameters.keys.include?('p_eft')
+            case parameters['p_eft']
+            when 'allow'
+              policy_effects.add(Effect::Effector::ALLOW)
+            when 'deny'
+              policy_effects.add(Effect::Effector::DENY)
+            else
+              policy_effects.add(Effect::Effector::INDETERMINATE)
+            end
+          else
+            policy_effects.add(Effect::Effector::ALLOW)
+          end
 
-          break if effector_model == 'priority(p_eft) || deny'
+          if effector.intermediate_effect(policy_effects) != Effect::Effector::INDETERMINATE
+            explain_index = i
+            break
+          end
         end
+
       else
         raise 'please make sure rule exists in policy when using eval() in matcher' if has_eval
 
-        parameters = r_parameters
-        p_tokens.each { |token| parameters[token] = '' }
-
-        result = evaluate expression, functions, parameters
-
-        policy_effects.add result ? Effect::Effector::ALLOW : Effect::Effector::INDETERMINATE
+        parameters = r_parameters.clone
+        model.model['p']['p'].tokens.each { |token| parameters[token] = '' }
+        result = evaluate(expression, functions, parameters)
+        if result
+          policy_effects.add(Effect::Effector::ALLOW)
+        else
+          policy_effects.add(Effect::Effector::INDETERMINATE)
+        end
       end
 
-      result = effector.merge_effects(effector_model, policy_effects, matcher_results)
+      final_effect = effector.final_effect(policy_effects)
+      result = Effect::DefaultEffector.effect_to_bool(final_effect)
 
+      # Log request.
       log_request(rvals, result)
 
-      result
+      explain_rule = []
+      explain_rule = model.model['p']['p'].policy[explain_index] if explain_index != -1 && explain_index < policy_len
+      [result, explain_rule]
     end
 
     protected
@@ -229,18 +298,20 @@ module Casbin
     attr_accessor :matcher_map
 
     def init(logger: Logger.new($stdout))
-      self.role_manager = Rbac::DefaultRoleManager::RoleManager.new 10, logger: logger
-      self.effector = Effect::DefaultEffector.new
+      self.rm_map = {}
+      self.effector = Effect::DefaultEffector.get_effector(model.model['e']['e'].value)
 
       self.enabled = true
       self.auto_save = true
       self.auto_build_role_links = true
 
       @logger = logger
+
+      init_rm_map
     end
 
     def evaluate(expr, funcs = {}, params = {})
-      Util::Evaluator.eval expr, funcs, params
+      Util::Evaluator.eval(expr, funcs, params)
     end
 
     def load_params(tokens, values)
@@ -263,21 +334,6 @@ module Casbin
       functions
     end
 
-    def policy_effect(params)
-      if params.key? 'p_eft'
-        case params['p_eft']
-        when 'allow'
-          Effect::Effector::ALLOW
-        when 'deny'
-          Effect::Effector::DENY
-        else
-          Effect::Effector::INDETERMINATE
-        end
-      else
-        Effect::Effector::ALLOW
-      end
-    end
-
     def log_request(rvals, result)
       req_str = "Request: #{rvals.map(&:to_s).join ', '} ---> #{result}"
 
@@ -286,6 +342,14 @@ module Casbin
       else
         # leaving this in error for now, if it's very noise this can be changed to info or debug
         logger.error(req_str)
+      end
+    end
+
+    def init_rm_map
+      return unless model.model.keys.include?('g')
+
+      model.model['g'].each_key do |ptype|
+        rm_map[ptype] = Rbac::DefaultRoleManager::RoleManager.new(10, logger: logger)
       end
     end
   end
