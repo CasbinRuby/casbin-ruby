@@ -7,7 +7,7 @@ describe Casbin::CoreEnforcer do
   let(:model) { Casbin::Model::Model.new }
   let(:adapter) { Casbin::Persist::Adapter.new }
   let(:enforcer) { described_class.new model, adapter }
-  let(:watcher) { double 'watcher' }
+  let(:watcher) { instance_double 'watcher' }
 
   describe '#initalize' do
     shared_examples 'creates new enforcer' do

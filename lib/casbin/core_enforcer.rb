@@ -30,7 +30,7 @@ module Casbin
       end
     end
 
-    attr_accessor :adapter, :auto_build_role_links, :auto_save, :effector, :enabled, :watcher, :rm_map, :effector
+    attr_accessor :adapter, :auto_build_role_links, :auto_save, :effector, :enabled, :watcher, :rm_map
     attr_reader :model
 
     # initializes an enforcer with a model file and a policy file.

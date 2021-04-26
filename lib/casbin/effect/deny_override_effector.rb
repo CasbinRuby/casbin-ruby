@@ -16,7 +16,7 @@ module Casbin
       def final_effect(effects)
         return DENY if effects.include?(DENY)
 
-       ALLOW
+        ALLOW
       end
     end
   end

@@ -2,6 +2,10 @@
 require:
   - rubocop-rspec
 
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 2.5.0
+
 Layout/EndOfLine:
   EnforcedStyle: lf
 
@@ -21,8 +25,7 @@ Style/OptionalBooleanParameter:
   Enabled: false
 
 Metrics/BlockLength:
-  Exclude:
-    - spec/**/*
+  Enabled: false
 
 RSpec/MultipleExpectations:
   Enabled: false
@@ -43,22 +46,22 @@ RSpec/NamedSubject:
   Enabled: false
 
 RSpec/NestedGroups:
-  MaxNesting: 7
+  Max: 7
 
 RSpec/StubbedMock:
   Enabled: false
 
 Metrics/AbcSize:
-  Max: 23
+  Enabled: false
 
 Metrics/CyclomaticComplexity:
-  Max: 11
+  Enabled: false
 
 Metrics/MethodLength:
-  Max: 20
+  Enabled: false
 
 Metrics/PerceivedComplexity:
-  Max: 9
+  Enabled: false
 
 Metrics/ClassLength:
   Enabled: false
