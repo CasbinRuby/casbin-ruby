@@ -33,7 +33,7 @@ describe Casbin::CoreEnforcer do
         let(:adapter) { policy_file 'basic' }
 
         it 'raises exception' do
-          expect { enforcer }.to raise_error RuntimeError, 'Invalid parameters for enforcer.'
+          expect { enforcer }.to raise_error StandardError, 'Invalid parameters for enforcer.'
         end
       end
 

@@ -5,7 +5,7 @@ require 'keisan'
 module Casbin
   module Util
     class Evaluator
-      class NamesConflictError < RuntimeError; end
+      class NamesConflictError < StandardError; end
 
       class << self
         # evaluate an expression, using the operators, functions and names previously setup.
