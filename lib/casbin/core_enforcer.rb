@@ -50,7 +50,7 @@ module Casbin
     # initializes an enforcer with a model and a database adapter.
     def init_with_model_and_adapter(m, adapter = nil, logger: Logger.new($stdout))
       if !m.is_a?(Model::Model) || (!adapter.nil? && !adapter.is_a?(Persist::Adapter))
-        raise RuntimeError('Invalid parameters for enforcer.')
+        raise StandardError, 'Invalid parameters for enforcer.'
       end
 
       self.adapter = adapter
@@ -207,7 +207,7 @@ module Casbin
 
       r_tokens = model.model['r']['r'].tokens
       p_tokens = model.model['p']['p'].tokens
-      raise RuntimeError('invalid request size') unless r_tokens.size == rvals.size
+      raise StandardError, 'invalid request size' unless r_tokens.size == rvals.size
 
       exp_string = model.model['m']['m'].value
       has_eval = Util.has_eval(exp_string)
@@ -218,7 +218,7 @@ module Casbin
       explain_index = -1
       if policy_len.positive?
         model.model['p']['p'].policy.each_with_index do |pvals, i|
-          raise RuntimeError('invalid policy size') unless p_tokens.size == pvals.size
+          raise StandardError, 'invalid policy size' unless p_tokens.size == pvals.size
 
           p_parameters = load_params(p_tokens, pvals)
           parameters = r_parameters.merge(p_parameters)
