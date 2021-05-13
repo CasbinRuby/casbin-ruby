@@ -7,8 +7,8 @@ Gem::Specification.new do |s|
   s.name        = 'casbin-ruby'
   s.version     = Casbin::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ['Igor Kutyavin']
-  s.email       = ['konayre@evrone.com']
+  s.authors     = ['Igor Kutyavin', 'Aleksandr Kirillov']
+  s.email       = %w[konayre@evrone.com kirillov@evrone.com]
   s.homepage    = 'https://github.com/evrone/casbin-ruby'
   s.licenses    = ['Apache License 2.0']
   s.description = 'An authorization library that supports access control models like ACL, RBAC, ABAC in Ruby'
