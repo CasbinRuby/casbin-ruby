@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'casbin/effect/effector'
-require 'casbin/effect/allow_override_effector'
-require 'casbin/effect/deny_override_effector'
-require 'casbin/effect/allow_and_deny_effector'
-require 'casbin/effect/priority_effector'
+require 'casbin/ruby/effect/effector'
+require 'casbin/ruby/effect/allow_override_effector'
+require 'casbin/ruby/effect/deny_override_effector'
+require 'casbin/ruby/effect/allow_and_deny_effector'
+require 'casbin/ruby/effect/priority_effector'
 
 module Casbin
   module Effect

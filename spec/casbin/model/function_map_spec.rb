@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'casbin/model/function_map'
-require 'casbin/util/builtin_operators'
+require 'casbin/ruby/model/function_map'
+require 'casbin/ruby/util/builtin_operators'
 
 describe Casbin::Model::FunctionMap do
   describe '#load_function_map' do

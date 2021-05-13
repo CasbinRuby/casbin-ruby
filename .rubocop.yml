@@ -65,3 +65,6 @@ Metrics/PerceivedComplexity:
 
 Metrics/ClassLength:
   Enabled: false
+
+Naming/FileName:
+  Enabled: false

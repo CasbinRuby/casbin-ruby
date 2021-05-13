@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'casbin/model/policy'
-require 'casbin/model/assertion'
-require 'casbin/config/config'
-require 'casbin/util'
+require 'casbin/ruby/model/policy'
+require 'casbin/ruby/model/assertion'
+require 'casbin/ruby/config/config'
+require 'casbin/ruby/util'
 
 module Casbin
   module Model

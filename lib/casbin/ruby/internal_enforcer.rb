@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'casbin/core_enforcer'
+require 'casbin/ruby/core_enforcer'
 
 module Casbin
   # InternalEnforcer = CoreEnforcer + Internal API.

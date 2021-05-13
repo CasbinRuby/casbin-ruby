@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
-require 'casbin/effect/effector'
+require 'casbin/ruby/effect/effector'
 
 module Casbin
   module Effect
-    class AllowOverrideEffector < Effect::Effector
+    class PriorityEffector < Effect::Effector
       # returns a intermediate effect based on the matched effects of the enforcer
       def intermediate_effect(effects)
         return ALLOW if effects.include?(ALLOW)
+        return DENY if effects.include?(DENY)
 
         INDETERMINATE
       end
@@ -15,6 +16,7 @@ module Casbin
       # returns the final effect based on the matched effects of the enforcer
       def final_effect(effects)
         return ALLOW if effects.include?(ALLOW)
+        return DENY if effects.include?(DENY)
 
         DENY
       end

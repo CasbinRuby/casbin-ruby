@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'casbin/util/thread_lock'
+require 'casbin/ruby/util/thread_lock'
 
 module Casbin
   # SyncedEnforcer wraps Enforcer and provides synchronized access.

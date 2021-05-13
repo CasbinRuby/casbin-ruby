@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'casbin/util/builtin_operators'
-require 'casbin/rbac/default_role_manager/role_manager'
+require 'casbin/ruby/util/builtin_operators'
+require 'casbin/ruby/rbac/default_role_manager/role_manager'
 
 describe Casbin::Util::BuiltinOperators do
   it '.key_match_func' do
