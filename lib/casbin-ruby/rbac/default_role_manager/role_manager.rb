@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'logger'
-require 'casbin/ruby/rbac/role_manager'
-require 'casbin/ruby/rbac/default_role_manager/role'
+require 'casbin-ruby/rbac/role_manager'
+require 'casbin-ruby/rbac/default_role_manager/role'
 
 module Casbin
   module Rbac

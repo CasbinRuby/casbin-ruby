@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'logger'
-require 'casbin/ruby/rbac/default_role_manager/role_manager'
-require 'casbin/ruby/util/builtin_operators'
+require 'casbin-ruby/rbac/default_role_manager/role_manager'
+require 'casbin-ruby/util/builtin_operators'
 
 describe Casbin::Rbac::DefaultRoleManager::RoleManager do
   let(:role_manager) { described_class.new(1) }

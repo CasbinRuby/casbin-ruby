@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'casbin/ruby/core_enforcer'
+require 'casbin-ruby/core_enforcer'
 require 'support/model_helper'
 
 describe Casbin::CoreEnforcer do

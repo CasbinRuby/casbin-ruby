@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'casbin/ruby/persist/adapter'
+require 'casbin-ruby/persist/adapter'
 
 module Casbin
   module Persist

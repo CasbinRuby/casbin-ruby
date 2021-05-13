@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'casbin/ruby/config/config'
+require 'casbin-ruby/config/config'
 
 describe Casbin::Config::Config do
   let(:path) { File.expand_path('test.ini', __dir__) }

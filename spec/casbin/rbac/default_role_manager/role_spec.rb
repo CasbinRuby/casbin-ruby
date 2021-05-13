@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'casbin/ruby/rbac/default_role_manager/role'
+require 'casbin-ruby/rbac/default_role_manager/role'
 
 describe Casbin::Rbac::DefaultRoleManager::Role do
   let(:role) { described_class.new('test_role') }

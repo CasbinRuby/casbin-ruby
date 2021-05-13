@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 $LOAD_PATH.push File.expand_path('lib', __dir__)
-require 'casbin/ruby/version'
+require 'casbin-ruby/version'
 
 Gem::Specification.new do |s|
   s.name        = 'casbin-ruby'
