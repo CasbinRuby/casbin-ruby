@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'casbin/effect/default_effector'
-require 'casbin/effect/effector'
-require 'casbin/model/function_map'
-require 'casbin/model/model'
-require 'casbin/persist/adapters/file_adapter'
-require 'casbin/rbac/default_role_manager/role_manager'
-require 'casbin/util'
-require 'casbin/util/builtin_operators'
-require 'casbin/util/evaluator'
+require 'casbin-ruby/effect/default_effector'
+require 'casbin-ruby/effect/effector'
+require 'casbin-ruby/model/function_map'
+require 'casbin-ruby/model/model'
+require 'casbin-ruby/persist/adapters/file_adapter'
+require 'casbin-ruby/rbac/default_role_manager/role_manager'
+require 'casbin-ruby/util'
+require 'casbin-ruby/util/builtin_operators'
+require 'casbin-ruby/util/evaluator'
 
 require 'logger'
 

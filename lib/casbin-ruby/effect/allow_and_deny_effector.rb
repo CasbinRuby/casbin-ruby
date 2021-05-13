@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'casbin/effect/effector'
+require 'casbin-ruby/effect/effector'
 
 module Casbin
   module Effect

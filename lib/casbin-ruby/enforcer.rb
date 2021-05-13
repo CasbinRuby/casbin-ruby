@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'casbin/management_enforcer'
-require 'casbin/util'
+require 'casbin-ruby/management_enforcer'
+require 'casbin-ruby/util'
 
 module Casbin
   # Enforcer = ManagementEnforcer + RBAC_API + RBAC_WITH_DOMAIN_API

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'casbin/util'
+require 'casbin-ruby/util'
 
 describe Casbin::Util do
   it '.remove_comments' do

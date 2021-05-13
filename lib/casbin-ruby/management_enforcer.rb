@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'casbin/internal_enforcer'
+require 'casbin-ruby/internal_enforcer'
 
 module Casbin
   # ManagementEnforcer = InternalEnforcer + Management API.
