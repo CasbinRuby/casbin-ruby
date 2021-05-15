@@ -8,6 +8,7 @@ at: http://casbin.org/editor/
 
 Casbin is a powerful and efficient open-source access control library for Ruby projects. It provides support for
 enforcing authorization based on various [access control models](https://en.wikipedia.org/wiki/Computer_security_model).
+Ruby version is ported & [supported by Evrone](https://evrone.com/?utm_campaign=casbinruby). More information you can find in articles [in English](https://evrone.com/casbin-ruby?utm_campaign=casbinruby).
 
 ## All the languages supported by Casbin:
 
