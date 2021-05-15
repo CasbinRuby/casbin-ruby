@@ -233,6 +233,15 @@ In process
 
 ## Contributors
 
+## Sponsors
+
+<p>
+  <a href="https://evrone.com/?utm_source=github&utm_campaign=datanymizer">
+    <img src="https://camo.githubusercontent.com/433f193098927e4e7229c229c8920f77898282063d4fc3cbafb04ea3d24d73df/68747470733a2f2f6576726f6e652e636f6d2f6c6f676f2f6576726f6e652d73706f6e736f7265642d6c6f676f2e706e67"
+      alt="Sponsored by Evrone" width="210">
+  </a>
+</p>
+
 ## License
 
 ## Contact
