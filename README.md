@@ -186,8 +186,8 @@ See [Policy management APIs](#policy-management) for more usage.
 
 Casbin provides two sets of APIs to manage permissions:
 
-- [Management API](https://github.com/casbin/casbin/blob/master/management_api.go): the primitive API that provides full support for Casbin policy management. See [here](https://github.com/casbin/casbin/blob/master/management_api_test.go) for examples.
-- [RBAC API](https://github.com/casbin/casbin/blob/master/rbac_api.go): a more friendly API for RBAC. This API is a subset of Management API. The RBAC users could use this API to simplify the code. See [here](https://github.com/casbin/casbin/blob/master/rbac_api_test.go) for examples.
+- [Management API](https://github.com/casbin/casbin/blob/main/management_api.go): the primitive API that provides full support for Casbin policy management. See [here](https://github.com/casbin/casbin/blob/main/management_api_test.go) for examples.
+- [RBAC API](https://github.com/casbin/casbin/blob/main/rbac_api.go): a more friendly API for RBAC. This API is a subset of Management API. The RBAC users could use this API to simplify the code. See [here](https://github.com/casbin/casbin/blob/main/rbac_api_test.go) for examples.
 
 We also provide a web-based UI for model management and policy management:
 
@@ -211,17 +211,17 @@ https://casbin.org/docs/en/benchmark
 
 Model | Model file | Policy file
 ----|------|----
-ACL | [basic_model.conf](https://github.com/casbin/casbin/blob/master/examples/basic_model.conf) | [basic_policy.csv](https://github.com/casbin/casbin/blob/master/examples/basic_policy.csv)
-ACL with superuser | [basic_model_with_root.conf](https://github.com/casbin/casbin/blob/master/examples/basic_with_root_model.conf) | [basic_policy.csv](https://github.com/casbin/casbin/blob/master/examples/basic_policy.csv)
-ACL without users | [basic_model_without_users.conf](https://github.com/casbin/casbin/blob/master/examples/basic_without_users_model.conf) | [basic_policy_without_users.csv](https://github.com/casbin/casbin/blob/master/examples/basic_without_users_policy.csv)
-ACL without resources | [basic_model_without_resources.conf](https://github.com/casbin/casbin/blob/master/examples/basic_without_resources_model.conf) | [basic_policy_without_resources.csv](https://github.com/casbin/casbin/blob/master/examples/basic_without_resources_policy.csv)
-RBAC | [rbac_model.conf](https://github.com/casbin/casbin/blob/master/examples/rbac_model.conf)  | [rbac_policy.csv](https://github.com/casbin/casbin/blob/master/examples/rbac_policy.csv)
-RBAC with resource roles | [rbac_model_with_resource_roles.conf](https://github.com/casbin/casbin/blob/master/examples/rbac_with_resource_roles_model.conf)  | [rbac_policy_with_resource_roles.csv](https://github.com/casbin/casbin/blob/master/examples/rbac_with_resource_roles_policy.csv)
-RBAC with domains/tenants | [rbac_model_with_domains.conf](https://github.com/casbin/casbin/blob/master/examples/rbac_with_domains_model.conf)  | [rbac_policy_with_domains.csv](https://github.com/casbin/casbin/blob/master/examples/rbac_with_domains_policy.csv)
-ABAC | [abac_model.conf](https://github.com/casbin/casbin/blob/master/examples/abac_model.conf)  | N/A
-RESTful | [keymatch_model.conf](https://github.com/casbin/casbin/blob/master/examples/keymatch_model.conf)  | [keymatch_policy.csv](https://github.com/casbin/casbin/blob/master/examples/keymatch_policy.csv)
-Deny-override | [rbac_model_with_deny.conf](https://github.com/casbin/casbin/blob/master/examples/rbac_with_deny_model.conf)  | [rbac_policy_with_deny.csv](https://github.com/casbin/casbin/blob/master/examples/rbac_with_deny_policy.csv)
-Priority | [priority_model.conf](https://github.com/casbin/casbin/blob/master/examples/priority_model.conf)  | [priority_policy.csv](https://github.com/casbin/casbin/blob/master/examples/priority_policy.csv)
+ACL | [basic_model.conf](https://github.com/casbin/casbin/blob/main/examples/basic_model.conf) | [basic_policy.csv](https://github.com/casbin/casbin/blob/main/examples/basic_policy.csv)
+ACL with superuser | [basic_model_with_root.conf](https://github.com/casbin/casbin/blob/main/examples/basic_with_root_model.conf) | [basic_policy.csv](https://github.com/casbin/casbin/blob/main/examples/basic_policy.csv)
+ACL without users | [basic_model_without_users.conf](https://github.com/casbin/casbin/blob/main/examples/basic_without_users_model.conf) | [basic_policy_without_users.csv](https://github.com/casbin/casbin/blob/main/examples/basic_without_users_policy.csv)
+ACL without resources | [basic_model_without_resources.conf](https://github.com/casbin/casbin/blob/main/examples/basic_without_resources_model.conf) | [basic_policy_without_resources.csv](https://github.com/casbin/casbin/blob/main/examples/basic_without_resources_policy.csv)
+RBAC | [rbac_model.conf](https://github.com/casbin/casbin/blob/main/examples/rbac_model.conf)  | [rbac_policy.csv](https://github.com/casbin/casbin/blob/main/examples/rbac_policy.csv)
+RBAC with resource roles | [rbac_model_with_resource_roles.conf](https://github.com/casbin/casbin/blob/main/examples/rbac_with_resource_roles_model.conf)  | [rbac_policy_with_resource_roles.csv](https://github.com/casbin/casbin/blob/main/examples/rbac_with_resource_roles_policy.csv)
+RBAC with domains/tenants | [rbac_model_with_domains.conf](https://github.com/casbin/casbin/blob/main/examples/rbac_with_domains_model.conf)  | [rbac_policy_with_domains.csv](https://github.com/casbin/casbin/blob/main/examples/rbac_with_domains_policy.csv)
+ABAC | [abac_model.conf](https://github.com/casbin/casbin/blob/main/examples/abac_model.conf)  | N/A
+RESTful | [keymatch_model.conf](https://github.com/casbin/casbin/blob/main/examples/keymatch_model.conf)  | [keymatch_policy.csv](https://github.com/casbin/casbin/blob/main/examples/keymatch_policy.csv)
+Deny-override | [rbac_model_with_deny.conf](https://github.com/casbin/casbin/blob/main/examples/rbac_with_deny_model.conf)  | [rbac_policy_with_deny.csv](https://github.com/casbin/casbin/blob/main/examples/rbac_with_deny_policy.csv)
+Priority | [priority_model.conf](https://github.com/casbin/casbin/blob/main/examples/priority_model.conf)  | [priority_policy.csv](https://github.com/casbin/casbin/blob/main/examples/priority_policy.csv)
 
 ## Middlewares
 
