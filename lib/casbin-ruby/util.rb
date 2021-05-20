@@ -68,7 +68,7 @@ module Casbin
 
       # joins a string and a slice into a new slice.
       def join_slice(a, *b)
-        Array.new(a).concat b
+        Array(a).concat b
       end
 
       # returns the elements in `a` that aren't in `b`.
