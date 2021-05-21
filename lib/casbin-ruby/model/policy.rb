@@ -114,7 +114,8 @@ module Casbin
 
       # removes policy rules based on field filters from the model.
       def remove_filtered_policy(sec, ptype, field_index, *field_values)
-        return false unless model.key?(sec) && model[sec].include?(ptype)
+        return false unless model.key?(sec)
+        return false unless model[sec].include?(ptype)
 
         state = { tmp: [], res: false }
         model[sec][ptype].policy.each do |rule|
@@ -142,12 +143,8 @@ module Casbin
       private
 
       def filtered_rule(state, rule, field_values, field_index)
-        matched = true
-
         field_values.each_with_index do |field_value, index|
-          next matched = false if field_value != '' && field_value != rule[field_index + index]
-
-          if matched
+          if field_value == '' || rule[field_index + index] == field_value
             state[:res] = true
           else
             state[:tmp] << rule

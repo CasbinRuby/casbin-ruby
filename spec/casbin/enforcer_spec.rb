@@ -28,6 +28,16 @@ describe Casbin::Enforcer do
       enf.load_model
       expect(enf.model).not_to be_nil
     end
+
+    it '#remove_filtered_policy' do
+      expect(enf.enforce('alice', 'data1', 'read')).to be_truthy
+      enf.remove_filtered_policy(1, 'data1')
+      expect(enf.enforce('alice', 'data1', 'read')).to be_falsey
+
+      expect(enf.enforce('bob', 'data2', 'write')).to be_truthy
+      enf.remove_filtered_policy(2, 'write')
+      expect(enf.enforce('bob', 'data2', 'write')).to be_falsey
+    end
   end
 
   describe 'basic without spaces' do
