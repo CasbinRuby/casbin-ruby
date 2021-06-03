@@ -131,7 +131,7 @@ What Casbin does NOT do:
 ## Installation
 
 ```
-gem 'casbin', github: 'evrone/casbin-ruby'
+gem 'casbin'
 ```
 
 ## Documentation
