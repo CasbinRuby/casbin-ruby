@@ -131,7 +131,7 @@ What Casbin does NOT do:
 ## Installation
 
 ```
-gem 'casbin'
+gem 'casbin-ruby'
 ```
 
 ## Documentation
@@ -152,7 +152,7 @@ https://casbin.org/docs/en/tutorials
 
 ```ruby
 # TODO: correct `require`
-require 'casbin'
+require 'casbin-ruby'
 enforcer = Casbin::Enforcer.new("path/to/model.conf", "path/to/policy.csv")
 ```
 
