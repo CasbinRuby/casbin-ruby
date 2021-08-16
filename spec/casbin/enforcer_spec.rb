@@ -38,6 +38,16 @@ describe Casbin::Enforcer do
       enf.remove_filtered_policy(2, 'write')
       expect(enf.enforce('bob', 'data2', 'write')).to be_falsey
     end
+
+    it '#add_policy' do
+      expect(enf.enforce('alice', 'data3', 'read')).to be_falsey
+      enf.add_policy('alice', 'data3', 'read')
+      enf.add_policy('alice', 'data4', 'read')
+      enf.add_policy(%w[alice data5 read])
+      expect(enf.enforce('alice', 'data3', 'read')).to be_truthy
+      expect(enf.enforce('alice', 'data4', 'read')).to be_truthy
+      expect(enf.enforce('alice', 'data5', 'read')).to be_truthy
+    end
   end
 
   describe 'basic without spaces' do

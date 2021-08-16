@@ -130,7 +130,7 @@ module Casbin
       if params.size == 1 && params[0].is_a?(Array)
         parent_add_policy('p', ptype, params[0])
       else
-        parent_add_policy('p', ptype, [params])
+        parent_add_policy('p', ptype, params)
       end
     end
 
