@@ -29,6 +29,11 @@ describe Casbin::Enforcer do
       expect(enf.model).not_to be_nil
     end
 
+    it '#get_filtered_policy' do
+      expect(enf.enforce('alice', 'data1', 'read')).to be_truthy
+      expect(enf.get_filtered_policy(0, 'alice')).to match_array([%w[alice data1 read]])
+    end
+
     it '#remove_filtered_policy' do
       expect(enf.enforce('alice', 'data1', 'read')).to be_truthy
       enf.remove_filtered_policy(1, 'data1')

@@ -112,6 +112,13 @@ module Casbin
         true
       end
 
+      # gets rules based on field filters from a policy.
+      def get_filtered_policy(sec, ptype, field_index, *field_values)
+        model[sec][ptype].policy.select do |rule|
+          field_values.select { |value| rule[field_index] == value }.any?
+        end.compact
+      end
+
       # removes policy rules based on field filters from the model.
       def remove_filtered_policy(sec, ptype, field_index, *field_values)
         return false unless model.key?(sec)
