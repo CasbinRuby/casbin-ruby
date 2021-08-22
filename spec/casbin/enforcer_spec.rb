@@ -53,6 +53,17 @@ describe Casbin::Enforcer do
       expect(enf.enforce('alice', 'data4', 'read')).to be_truthy
       expect(enf.enforce('alice', 'data5', 'read')).to be_truthy
     end
+
+    it '#remove_policy' do
+      enf.add_policy('alice', 'data3', 'read')
+      expect(enf.enforce('alice', 'data3', 'read')).to be_truthy
+      enf.remove_policy('alice', 'data3', 'read')
+      expect(enf.enforce('alice', 'data3', 'read')).to be_falsey
+      enf.add_policy('alice', 'data3', 'read')
+      expect(enf.enforce('alice', 'data3', 'read')).to be_truthy
+      enf.remove_policy(%w[alice data3 read])
+      expect(enf.enforce('alice', 'data3', 'read')).to be_falsey
+    end
   end
 
   describe 'basic without spaces' do
@@ -164,6 +175,18 @@ describe Casbin::Enforcer do
       expect(enf.enforce('alice', 'data2', 'read')).to be_truthy
       expect(enf.enforce('alice', 'data2', 'write')).to be_truthy
       expect(enf.enforce('bogus', 'data2', 'write')).to be_falsey
+    end
+
+    it '#add_grouping_policy' do
+      expect(enf.enforce('alice', 'data3', 'read')).to be_falsey
+      enf.add_policy('base', 'data3', 'read')
+      enf.add_policy(%w[alice data4 read])
+      enf.add_grouping_policy('alice', 'base')
+      enf.add_grouping_policy(%w[bob base])
+      expect(enf.enforce('alice', 'data3', 'read')).to be_truthy
+      expect(enf.enforce('bob', 'data3', 'read')).to be_truthy
+      expect(enf.enforce('alice', 'data4', 'read')).to be_truthy
+      expect(enf.enforce('bob', 'data4', 'read')).to be_falsey
     end
   end
 

@@ -182,7 +182,7 @@ module Casbin
       if params.size == 1 && params[0].is_a?(Array)
         parent_remove_policy('p', ptype, params[0])
       else
-        parent_remove_policy('p', ptype, [params])
+        parent_remove_policy('p', ptype, params)
       end
     end
 
@@ -235,7 +235,7 @@ module Casbin
       rule_added = if params.size == 1 && params[0].is_a?(Array)
                      parent_add_policy('g', ptype, params[0])
                    else
-                     parent_add_policy('g', ptype, [params])
+                     parent_add_policy('g', ptype, params)
                    end
 
       auto_build_role_links ? build_role_links : rule_added
