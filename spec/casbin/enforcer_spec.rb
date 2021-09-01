@@ -64,6 +64,42 @@ describe Casbin::Enforcer do
       enf.remove_policy(%w[alice data3 read])
       expect(enf.enforce('alice', 'data3', 'read')).to be_falsey
     end
+
+    # rubocop:disable RSpec/RepeatedExample
+    it '#delete_permission' do
+      # TODO: Add support this method
+      # expect(enf.enforce('bob', 'data2', 'write')).to be_truthy
+      # expect(enf.enforce('data2_admin', 'data2', 'read')).to be_truthy
+      # expect(enf.enforce('data2_admin', 'data2', 'write')).to be_truthy
+      # expect(enf.delete_permission('data2')).to be_truthy
+      # expect(enf.enforce('bob', 'data2', 'write')).to be_falsey
+      # expect(enf.enforce('data2_admin', 'data2', 'read')).to be_falsey
+      # expect(enf.enforce('data2_admin', 'data2', 'write')).to be_falsey
+    end
+
+    it '#delete_permissions_for_user' do
+      # TODO: Add support this method
+      # expect(enf.enforce('alice', 'data1', 'read')).to be_truthy
+      # expect(enf.delete_permissions_for_user('alice')).to be_truthy
+      # expect(enf.enforce('alice', 'data1', 'read')).to be_falsey
+    end
+
+    it '#get_permissions_for_user' do
+      # TODO: Add support this method
+      # expect(enf.get_permissions_for_user('alice')).to match_array([%w[alice data1 read],
+      #                                                               %w[data2_admin data2 read],
+      #                                                               %w[data2_admin data2 write]])
+    end
+    # rubocop:enable RSpec/RepeatedExample
+
+    it '#has_permission_for_user' do
+      expect(enf.has_permission_for_user('alice', 'data1', 'read')).to be_truthy
+      expect(enf.has_permission_for_user('alice', 'data1', 'write')).to be_falsey
+    end
+
+    it '#get_implicit_permissions_for_user' do
+      expect(enf.get_implicit_permissions_for_user('alice')).to match_array([%w[alice data1 read]])
+    end
   end
 
   describe 'basic without spaces' do
@@ -188,6 +224,68 @@ describe Casbin::Enforcer do
       expect(enf.enforce('alice', 'data4', 'read')).to be_truthy
       expect(enf.enforce('bob', 'data4', 'read')).to be_falsey
     end
+
+    it '#get_roles_for_user' do
+      expect(enf.get_roles_for_user('alice')).to match_array(['data2_admin'])
+      expect(enf.get_roles_for_user('bob')).to match_array([])
+    end
+
+    it '#get_users_for_role' do
+      expect(enf.get_users_for_role('data2_admin')).to match_array(['alice'])
+      expect(enf.get_users_for_role('data1_admin')).to match_array([])
+    end
+
+    it '#has_role_for_user' do
+      expect(enf.has_role_for_user('alice', 'data2_admin')).to be_truthy
+      expect(enf.has_role_for_user('bob', 'data2_admin')).to be_falsey
+    end
+
+    it '#add_role_for_user' do
+      expect(enf.has_role_for_user('alice', 'manager')).to be_falsey
+      expect(enf.add_role_for_user('alice', 'manager')).to be_truthy
+      expect(enf.has_role_for_user('alice', 'manager')).to be_truthy
+    end
+
+    it '#delete_role_for_user' do
+      expect(enf.has_role_for_user('alice', 'data2_admin')).to be_truthy
+      expect(enf.delete_role_for_user('alice', 'data2_admin')).to be_truthy
+      expect(enf.has_role_for_user('alice', 'data2_admin')).to be_falsey
+    end
+
+    it '#delete_roles_for_user' do
+      enf.add_grouping_policy('alice', 'base')
+      expect(enf.delete_roles_for_user('alice')).to be_truthy
+      expect(enf.get_roles_for_user('alice')).to match_array([])
+    end
+
+    it '#delete_user' do
+      expect(enf.enforce('alice', 'data1', 'read')).to be_truthy
+      expect(enf.has_role_for_user('alice', 'data2_admin')).to be_truthy
+      expect(enf.delete_user('alice')).to be_truthy
+      expect(enf.enforce('alice', 'data1', 'read')).to be_falsey
+      expect(enf.has_role_for_user('alice', 'data2_admin')).to be_falsey
+    end
+
+    it '#delete_role' do
+      expect(enf.enforce('data2_admin', 'data2', 'read')).to be_truthy
+      expect(enf.has_role_for_user('alice', 'data2_admin')).to be_truthy
+      expect(enf.delete_role('data2_admin')).to be_truthy
+      expect(enf.enforce('data2_admin', 'data2', 'read')).to be_falsey
+      expect(enf.has_role_for_user('alice', 'data2_admin')).to be_falsey
+    end
+
+    # rubocop:disable RSpec/RepeatedExample
+    it '#get_implicit_roles_for_user' do
+      # TODO: Add support this method
+      # enf.add_role_for_user('data2_admin', 'super_admin')
+      # expect(enf.get_implicit_roles_for_user('alice')).to match_array(%w[data2_admin super_admin])
+    end
+
+    it '#get_implicit_users_for_permission' do
+      # TODO: Add support this method
+      # expect(enf.get_implicit_users_for_permission('data2', 'write')).to match_array(%w[alice bob])
+    end
+    # rubocop:enable RSpec/RepeatedExample
   end
 
   describe 'rbac empty policy' do
@@ -226,6 +324,34 @@ describe Casbin::Enforcer do
       expect(enf.enforce('bob', 'domain2', 'data1', 'write')).to be_falsey
       expect(enf.enforce('bob', 'domain2', 'data2', 'read')).to be_truthy
       expect(enf.enforce('bob', 'domain2', 'data2', 'write')).to be_truthy
+    end
+
+    it '#get_roles_for_user_in_domain' do
+      expect(enf.get_roles_for_user_in_domain('alice', 'domain1')).to match_array(%w[admin])
+      expect(enf.get_roles_for_user_in_domain('bob', 'domain2')).to match_array(%w[admin])
+    end
+
+    it '#get_users_for_role_in_domain' do
+      expect(enf.get_users_for_role_in_domain('admin', 'domain1')).to match_array(%w[alice])
+      expect(enf.get_users_for_role_in_domain('admin', 'domain2')).to match_array(%w[bob])
+    end
+
+    it '#delete_roles_for_user_in_domain' do
+      enf.delete_roles_for_user_in_domain('alice', 'admin', 'domain1')
+      expect(enf.get_roles_for_user_in_domain('alice', 'domain1')).to match_array(%w[])
+    end
+
+    it '#get_permissions_for_user_in_domain' do
+      expect(enf.get_permissions_for_user_in_domain('admin', 'domain1'))
+        .to match_array([%w[admin domain1 data1 read],
+                         %w[admin domain1 data1 write],
+                         %w[admin domain2 data2 read],
+                         %w[admin domain2 data2 write]])
+      expect(enf.get_permissions_for_user_in_domain('admin', 'domain2'))
+        .to match_array([%w[admin domain1 data1 read],
+                         %w[admin domain1 data1 write],
+                         %w[admin domain2 data2 read],
+                         %w[admin domain2 data2 write]])
     end
   end
 

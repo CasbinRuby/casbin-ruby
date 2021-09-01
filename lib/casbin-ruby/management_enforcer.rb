@@ -102,7 +102,7 @@ module Casbin
       if params.size == 1 && params[0].is_a?(Array)
         model.has_policy('p', ptype, params[0])
       else
-        model.has_policy('p', ptype, [params])
+        model.has_policy('p', ptype, params)
       end
     end
 
@@ -206,7 +206,7 @@ module Casbin
       if params.size == 1 && params[0].is_a?(Array)
         model.has_policy('g', ptype, params[0])
       else
-        model.has_policy('g', ptype, [params])
+        model.has_policy('g', ptype, params)
       end
     end
 
@@ -271,7 +271,7 @@ module Casbin
       rule_added = if params.size == 1 && params[0].is_a?(Array)
                      parent_remove_policy('g', ptype, params[0])
                    else
-                     parent_remove_policy('g', ptype, [params])
+                     parent_remove_policy('g', ptype, params)
                    end
 
       auto_build_role_links ? build_role_links : rule_added
