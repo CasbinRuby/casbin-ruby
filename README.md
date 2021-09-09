@@ -151,7 +151,20 @@ https://casbin.org/docs/en/tutorials
 1. New a Casbin enforcer with a model file and a policy file:
 
 ```ruby
-# TODO: correct `require`
+require 'casbin-ruby'
+Casbin::Config.setup do |config|
+  config.model = "path/to/model.conf" # default: nil
+  config.adapter = "path/to/policy.csv" # default: nil
+  config.watcher = Casbin::SomeWatcher # default: nil
+  config.logger = Logger.new($stdout) # default: Logger.new($stdout, level: :error)
+end
+
+enforcer = Casbin::Enforcer.new
+```
+
+OR
+
+```ruby
 require 'casbin-ruby'
 enforcer = Casbin::Enforcer.new("path/to/model.conf", "path/to/policy.csv")
 ```

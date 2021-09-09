@@ -4,6 +4,7 @@ require 'casbin-ruby/model/policy'
 require 'casbin-ruby/model/assertion'
 require 'casbin-ruby/config/config'
 require 'casbin-ruby/util'
+require 'casbin-ruby/logger'
 
 module Casbin
   module Model
@@ -29,7 +30,7 @@ module Casbin
       def add_def(sec, key, value)
         return false if value == ''
 
-        ast = Assertion.new(key: key, value: value, logger: logger)
+        ast = Assertion.new(key: key, value: value)
         %w[r p].include?(sec) ? ast_tokens_set(ast, key) : model_sec_set(ast)
 
         model[sec] ||= {}
@@ -37,11 +38,11 @@ module Casbin
       end
 
       def print_model
-        logger.info 'Model:'
+        Logger.info 'Model:'
 
         model.each do |k, v|
           v.each do |i, j|
-            logger.info "#{k}.#{i}: #{j.value}"
+            Logger.info "#{k}.#{i}: #{j.value}"
           end
         end
       end

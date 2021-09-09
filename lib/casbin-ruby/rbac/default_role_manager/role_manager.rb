@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'logger'
 require 'casbin-ruby/rbac/role_manager'
 require 'casbin-ruby/rbac/default_role_manager/role'
+require 'casbin-ruby/logger'
 
 module Casbin
   module Rbac
@@ -10,11 +10,9 @@ module Casbin
       # provides a default implementation for the RoleManager interface
       class RoleManager < Rbac::RoleManager
         attr_accessor :all_roles, :max_hierarchy_level, :matching_func, :has_domain_pattern, :domain_matching_func
-        attr_reader :logger
 
-        def initialize(max_hierarchy_level, logger: Logger.new($stdout))
+        def initialize(max_hierarchy_level)
           super()
-          @logger = logger
           @all_roles = {}
           @max_hierarchy_level = max_hierarchy_level
         end
@@ -120,7 +118,7 @@ module Casbin
 
         def print_roles
           line = all_roles.map { |_key, role| role.to_string }.compact
-          logger.info(line.join(', '))
+          Logger.info(line.join(', '))
         end
 
         private

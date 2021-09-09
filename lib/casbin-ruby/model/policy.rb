@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
-require 'logger'
+require 'casbin-ruby/logger'
 
 module Casbin
   module Model
     class Policy
-      attr_reader :model, :logger
+      attr_reader :model
 
-      def initialize(logger: Logger.new($stdout))
+      def initialize
         @model = {}
-        @logger = logger
       end
 
       # initializes the roles in RBAC.
@@ -24,13 +23,13 @@ module Casbin
 
       # Log using info
       def print_policy
-        logger.info 'Policy:'
+        Logger.info 'Policy:'
 
         %w[p g].each do |sec|
           next unless model.key? sec
 
           model[sec].each do |key, ast|
-            logger.info "#{key} : #{ast.value} : #{ast.policy}"
+            Logger.info "#{key} : #{ast.value} : #{ast.policy}"
           end
         end
       end

@@ -9,46 +9,50 @@ require 'casbin-ruby/rbac/default_role_manager/role_manager'
 require 'casbin-ruby/util'
 require 'casbin-ruby/util/builtin_operators'
 require 'casbin-ruby/util/evaluator'
-
-require 'logger'
+require 'casbin-ruby/logger'
+require 'casbin-ruby/config'
 
 module Casbin
   # CoreEnforcer defines the core functionality of an enforcer.
   # get_attr/set_attr methods is ported from Python as attr/attr=
   class CoreEnforcer
-    def initialize(model = nil, adapter = nil, logger: Logger.new($stdout))
+    def initialize(model = nil, adapter = nil, watcher = nil)
+      model ||= Config.model
+      adapter ||= Config.adapter
+      @watcher = watcher || Config.watcher
+
       if model.is_a? String
         if adapter.is_a? String
-          init_with_file(model, adapter, logger: logger)
+          init_with_file(model, adapter)
         else
-          init_with_adapter(model, adapter, logger: logger)
+          init_with_adapter(model, adapter)
         end
       elsif adapter.is_a? String
         raise 'Invalid parameters for enforcer.'
       else
-        init_with_model_and_adapter(model, adapter, logger: logger)
+        init_with_model_and_adapter(model, adapter)
       end
     end
 
-    attr_accessor :adapter, :auto_build_role_links, :auto_save, :effector, :enabled, :watcher, :rm_map
-    attr_reader :model
+    attr_accessor :auto_build_role_links, :auto_save, :effector, :enabled, :rm_map
+    attr_reader :adapter, :model, :watcher
 
     # initializes an enforcer with a model file and a policy file.
-    def init_with_file(model_path, policy_path, logger: Logger.new($stdout))
+    def init_with_file(model_path, policy_path)
       a = Persist::Adapters::FileAdapter.new(policy_path)
-      init_with_adapter(model_path, a, logger: logger)
+      init_with_adapter(model_path, a)
     end
 
     # initializes an enforcer with a database adapter.
-    def init_with_adapter(model_path, adapter = nil, logger: Logger.new($stdout))
+    def init_with_adapter(model_path, adapter = nil)
       m = new_model(model_path)
-      init_with_model_and_adapter(m, adapter, logger: logger)
+      init_with_model_and_adapter(m, adapter)
 
       self.model_path = model_path
     end
 
     # initializes an enforcer with a model and a database adapter.
-    def init_with_model_and_adapter(m, adapter = nil, logger: Logger.new($stdout))
+    def init_with_model_and_adapter(m, adapter = nil)
       if !m.is_a?(Model::Model) || (!adapter.nil? && !adapter.is_a?(Persist::Adapter))
         raise StandardError, 'Invalid parameters for enforcer.'
       end
@@ -59,15 +63,15 @@ module Casbin
       model.print_model
       self.fm = Model::FunctionMap.load_function_map
 
-      init(logger: logger)
+      init
 
       # Do not initialize the full policy when using a filtered adapter
       load_policy if adapter && !filtered?
     end
 
     # creates a model.
-    def self.new_model(path = '', text = '', logger: Logger.new($stdout))
-      m = Model::Model.new logger: logger
+    def self.new_model(path = '', text = '')
+      m = Model::Model.new
       if path.length.positive?
         m.load_model(path)
       else
@@ -291,21 +295,19 @@ module Casbin
     protected
 
     attr_accessor :model_path, :fm, :auto_motify_watcher
-    attr_reader :logger
 
     private
 
     attr_accessor :matcher_map
+    attr_writer :adapter
 
-    def init(logger: Logger.new($stdout))
+    def init
       self.rm_map = {}
       self.effector = Effect::DefaultEffector.get_effector(model.model['e']['e'].value)
 
       self.enabled = true
       self.auto_save = true
       self.auto_build_role_links = true
-
-      @logger = logger
 
       init_rm_map
     end
@@ -338,10 +340,10 @@ module Casbin
       req_str = "Request: #{rvals.map(&:to_s).join ', '} ---> #{result}"
 
       if result
-        logger.info(req_str)
+        Logger.info(req_str)
       else
         # leaving this in error for now, if it's very noise this can be changed to info or debug
-        logger.error(req_str)
+        Logger.error(req_str)
       end
     end
 
@@ -349,7 +351,7 @@ module Casbin
       return unless model.model.keys.include?('g')
 
       model.model['g'].each_key do |ptype|
-        rm_map[ptype] = Rbac::DefaultRoleManager::RoleManager.new(10, logger: logger)
+        rm_map[ptype] = Rbac::DefaultRoleManager::RoleManager.new(10)
       end
     end
   end
