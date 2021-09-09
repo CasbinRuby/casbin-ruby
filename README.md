@@ -155,7 +155,7 @@ require 'casbin-ruby'
 Casbin::Config.setup do |config|
   config.model = "path/to/model.conf" # default: nil
   config.adapter = "path/to/policy.csv" # default: nil
-  config.watcher = Casbin::SomWatcher # default: nil
+  config.watcher = Casbin::SomeWatcher # default: nil
   config.logger = Logger.new($stdout) # default: Logger.new($stdout, level: :error)
 end
 
