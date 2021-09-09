@@ -10,13 +10,16 @@ require 'casbin-ruby/util'
 require 'casbin-ruby/util/builtin_operators'
 require 'casbin-ruby/util/evaluator'
 require 'casbin-ruby/logger'
+require 'casbin-ruby/config'
 
 module Casbin
   # CoreEnforcer defines the core functionality of an enforcer.
   # get_attr/set_attr methods is ported from Python as attr/attr=
   class CoreEnforcer
-    def initialize(model = nil, adapter = nil, logger: ::Logger.new($stdout), level: 'error')
-      Logger.register(logger, level)
+    def initialize(model = nil, adapter = nil, watcher = nil)
+      model ||= Config.model
+      adapter ||= Config.adapter
+      @watcher = watcher || Config.watcher
 
       if model.is_a? String
         if adapter.is_a? String
@@ -31,8 +34,8 @@ module Casbin
       end
     end
 
-    attr_accessor :adapter, :auto_build_role_links, :auto_save, :effector, :enabled, :watcher, :rm_map
-    attr_reader :model
+    attr_accessor :auto_build_role_links, :auto_save, :effector, :enabled, :rm_map
+    attr_reader :adapter, :model, :watcher
 
     # initializes an enforcer with a model file and a policy file.
     def init_with_file(model_path, policy_path)
@@ -296,6 +299,7 @@ module Casbin
     private
 
     attr_accessor :matcher_map
+    attr_writer :adapter
 
     def init
       self.rm_map = {}

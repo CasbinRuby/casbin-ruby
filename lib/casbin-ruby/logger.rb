@@ -1,20 +1,17 @@
 # frozen_string_literal: true
 
+require 'casbin-ruby/config'
+
 module Casbin
   module Logger
     module_function
 
-    def register(logger, level)
-      @logger = logger
-      @level = level
-    end
-
     def info(value)
-      @logger.info(value) if @level == 'info'
+      Config.logger.info(value)
     end
 
     def error(value)
-      @logger.error(value) if @level == 'info' || @level == 'error'
+      Config.logger.error(value)
     end
   end
 end
