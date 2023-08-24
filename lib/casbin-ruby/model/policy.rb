@@ -140,7 +140,7 @@ module Casbin
 
         model[sec][ptype].policy.each do |rule|
           value = rule[field_index]
-          values << value if values.include?(value)
+          values << value unless values.include?(value)
         end
 
         values
